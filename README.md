@@ -1,2 +1,2 @@
-# TheStandard.PoC.WatchDog
+# TheStandard.PoC.TheWatchDog
 PoC about BackgroundWorker using The Standard
