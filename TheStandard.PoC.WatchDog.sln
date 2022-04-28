@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32422.2
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WatchDog", "WatchDog\WatchDog.csproj", "{1D56B3D6-8476-4F1C-8E91-42EFE4B2E467}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchDog.Tests.Unit", "WatchDog.Tests.Unit\WatchDog.Tests.Unit.csproj", "{226451FA-3F9E-46C0-BD72-54A77DDDD82B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D56B3D6-8476-4F1C-8E91-42EFE4B2E467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D56B3D6-8476-4F1C-8E91-42EFE4B2E467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D56B3D6-8476-4F1C-8E91-42EFE4B2E467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D56B3D6-8476-4F1C-8E91-42EFE4B2E467}.Release|Any CPU.Build.0 = Release|Any CPU
+		{226451FA-3F9E-46C0-BD72-54A77DDDD82B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{226451FA-3F9E-46C0-BD72-54A77DDDD82B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{226451FA-3F9E-46C0-BD72-54A77DDDD82B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{226451FA-3F9E-46C0-BD72-54A77DDDD82B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {58734375-E28B-4011-A5EA-2A79D0CA06C2}
+	EndGlobalSection
+EndGlobal
