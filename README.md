@@ -1,2 +1,2 @@
 # TheStandard.PoC.TheWatchDog
-PoC about BackgroundWorker using The Standard
+PoC about integrating BackgroundWorker having in mind The Standard by Hassan Habib.
