@@ -25,7 +25,19 @@ namespace TheWatchDog.Services.Foundations.WatchDogs
 				, Action actionOnException = null
 				, Action actionOnCancel = null)
 		{
-			throw new NotImplementedException();
+			WatchDog watchDog = new WatchDog()
+				{
+				Id = Guid.NewGuid()
+				, State = WatchDogState.Initializating
+				, ActionOnRun = actionOnRun
+				, ActionDuringRun = actionDuringRun
+				, ActionOnSuccessfulRun = actionOnSuccessfulRun
+				, ActionOnException = actionOnException
+				, ActionOnCancel = actionOnCancel
+				, CompletedEventHandler = eventHandler
+				};
+
+			watchDogBroker.RunAndListen(watchDog);
 		}
 
 		public void Cancel()
