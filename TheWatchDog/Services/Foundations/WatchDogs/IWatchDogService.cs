@@ -10,7 +10,7 @@ namespace TheWatchDog.Services.Foundations.WatchDogs
 {
 	public interface IWatchDogService
 	{
-		void Run(Action actionOnRun = null
+		void RunAndListen(Action actionOnRun = null
 				, Action actionDuringRun = null
 				, Action actionOnSuccessfulRun = null
 				, Action actionOnException = null

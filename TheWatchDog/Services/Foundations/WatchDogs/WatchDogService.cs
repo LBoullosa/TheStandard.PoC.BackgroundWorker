@@ -16,13 +16,13 @@ namespace TheWatchDog.Services.Foundations.WatchDogs
 
 		public WatchDogService(IWatchDogBroker watchDogBroker) => this.watchDogBroker = watchDogBroker;
 
-		public void Run(Action actionOnRun = null
+		public void RunAndListen(Action actionOnRun = null
 						, Action actionDuringRun = null
 						, Action actionOnSuccessfulRun = null
 						, Action actionOnException = null
 						, Action actionOnCancel = null)
 		{
-			WatchDog backgroundDog = new Models.WatchDog()
+			WatchDog watchDog = new WatchDog()
 				{
 				Id = Guid.NewGuid()
 				, State = WatchDogState.Initializating
@@ -33,7 +33,7 @@ namespace TheWatchDog.Services.Foundations.WatchDogs
 				, ActionOnCancel = actionOnCancel
 				};
 
-			watchDogBroker.RunAndListen(backgroundDog);
+			watchDogBroker.RunAndListen(watchDog);
 		}
 
 		public void Cancel()

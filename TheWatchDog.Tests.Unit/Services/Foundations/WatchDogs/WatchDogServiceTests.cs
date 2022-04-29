@@ -22,7 +22,8 @@ namespace TheWatchDog.Tests.Unit.Services.Foundations.WatchDogs
 			watchDogService = new WatchDogService(watchDogBrokerMock.Object);
 		}
 
-		private static int GetRandomMiliseconds() => new IntRange(min: 1000, max: 3500).GetValue();
+		private static int GetRandomMiliseconds() =>
+			new IntRange(min: 1000, max: 3500).GetValue();
 
 	}
 }

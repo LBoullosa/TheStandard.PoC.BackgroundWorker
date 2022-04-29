@@ -10,7 +10,7 @@ namespace TheWatchDog.Brokers.WatchDogs
 {
 	public interface IWatchDogBroker
 	{
-		void RunAndListen(WatchDog backgroundDog);
+		void RunAndListen(WatchDog watchDog);
 		void Cancel();
 	}
 }

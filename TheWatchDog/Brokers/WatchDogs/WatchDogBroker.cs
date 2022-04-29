@@ -13,21 +13,64 @@ namespace TheWatchDog.Brokers.WatchDogs
 	public class WatchDogBroker : IWatchDogBroker
 	{
 		private readonly BackgroundWorker backgroundWorker;
-		WatchDog backgroundDog;
+		WatchDog watchDog;
 
 		public WatchDogBroker() =>
 			backgroundWorker = new BackgroundWorker();
 
-		public void RunAndListen(WatchDog backgroundDog)
+		private void InitializeBackgroundWorker()
 		{
-			this.backgroundDog = backgroundDog;
 			backgroundWorker.DoWork += BackgroundWorker_DoWork;
 			backgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
 			backgroundWorker.ProgressChanged += BackgroundWorker_ProgressChanged;
-			backgroundDog.State = WatchDogState.Initialized;
 			backgroundWorker.WorkerReportsProgress = true;
 			backgroundWorker.WorkerSupportsCancellation = true;
+		}
+
+		public void RunAndListen(WatchDog watchDog)
+		{
+			this.watchDog = watchDog;
+
+			InitializeBackgroundWorker();
+
+			watchDog.State = WatchDogState.Initialized;
+
 			backgroundWorker.RunWorkerAsync();
+		}
+
+		private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+		{
+			watchDog.State = WatchDogState.Running;
+			
+			watchDog.ActionOnRun?.Invoke();
+			watchDog.State = WatchDogState.Runned;
+		}
+
+		private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+		{
+			watchDog.ActionDuringRun?.Invoke();
+		}
+
+		private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			if (e.Cancelled)
+			{
+				watchDog.State = WatchDogState.Canceling;
+				watchDog.ActionOnCancel?.Invoke();
+				watchDog.State = WatchDogState.Cancelled;
+			}
+
+			if (e.Error is not null)
+			{
+				watchDog.State = WatchDogState.Error;
+				watchDog.ActionOnException?.Invoke();
+			}
+			else
+			{
+				watchDog.State = WatchDogState.Finalizing;
+				watchDog.ActionOnSuccessfulRun?.Invoke();
+				watchDog.State = WatchDogState.Finalized;
+			}
 		}
 
 		public void Cancel()
@@ -35,38 +78,5 @@ namespace TheWatchDog.Brokers.WatchDogs
 			backgroundWorker.CancelAsync();
 		}
 
-		private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-		{
-			backgroundDog.State = WatchDogState.Running;
-			backgroundDog.ActionOnRun?.Invoke();
-			backgroundDog.State = WatchDogState.Runned;
-		}
-
-		private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-		{
-			backgroundDog.ActionDuringRun?.Invoke();
-		}
-
-		private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-		{
-			if (e.Cancelled)
-			{
-				backgroundDog.State = WatchDogState.Canceling;
-				backgroundDog.ActionOnCancel?.Invoke();
-				backgroundDog.State = WatchDogState.Cancelled;
-			}
-
-			if (e.Error is not null)
-			{
-				backgroundDog.State = WatchDogState.Error;
-				backgroundDog.ActionOnException?.Invoke();
-			}
-			else
-			{
-				backgroundDog.State = WatchDogState.Finalizing;
-				backgroundDog.ActionOnSuccessfulRun?.Invoke();
-				backgroundDog.State = WatchDogState.Finalized;
-			}
-		}
 	}
 }
