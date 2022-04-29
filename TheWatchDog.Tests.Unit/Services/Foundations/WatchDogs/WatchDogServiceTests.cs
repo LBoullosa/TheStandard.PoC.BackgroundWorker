@@ -43,7 +43,6 @@ namespace TheWatchDog.Tests.Unit.Services.Foundations.WatchDogs
 
 		private static Action CreateRandomAction() => () =>
 			{
-			//await Task.Delay(GetRandomMiliseconds());
 			Thread.Sleep(GetRandomMiliseconds());
 			};
 

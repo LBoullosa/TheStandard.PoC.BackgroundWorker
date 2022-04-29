@@ -31,7 +31,7 @@ namespace TheWatchDog.Tests.Unit.Services.Foundations.WatchDogs
 			// then
 			this.watchDogBrokerMock.Verify(broker =>
 				broker.RunAndListen(
-					It.Is<WatchDog>(x=>x.CompletedEventHandler == watchDogEventHandlerMock.Object))
+					It.Is<WatchDog>(x => x.CompletedEventHandler == watchDogEventHandlerMock.Object))
 				, Times.Once());
 
 			this.watchDogBrokerMock.VerifyNoOtherCalls();
