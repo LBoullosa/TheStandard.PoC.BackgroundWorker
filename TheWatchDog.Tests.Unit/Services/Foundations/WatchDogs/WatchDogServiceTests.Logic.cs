@@ -16,37 +16,22 @@ namespace TheWatchDog.Tests.Unit.Services.Foundations.WatchDogs
 {
 	public partial class WatchDogServiceTests
 	{
+
 		[Fact]
-		public void ShouldListenToWorker()
+		public void ShouldListenToWatchDogEvent()
 		{
 			// given
 			var watchDogEventHandlerMock =
 				new Mock<Func<WatchDog, Task>>();
 
-			WatchDog randomWatchDog = CreateRandomWatchDog();
-			WatchDog inputWatchDog = randomWatchDog;
-
-			watchDogBrokerMock
-				.Setup(broker =>
-					broker.RunAndListen(
-						It.IsAny<WatchDog>()))
-				.Callback<WatchDog>(watchDog =>
-					{
-					watchDog.CompletedEventHandler.Invoke(inputWatchDog);
-					});
-
 			// when
 			watchDogService.RunAndListen(
-				eventHandler: watchDogEventHandlerMock.Object
-				, actionOnRun: randomWatchDog.ActionOnRun);
+				eventHandler: watchDogEventHandlerMock.Object);
 
 			// then
-			watchDogEventHandlerMock.Verify(handler =>
-				handler.Invoke(It.Is(SameWatchDogAs(inputWatchDog)))
-				, Times.Once);
-
 			this.watchDogBrokerMock.Verify(broker =>
-				broker.RunAndListen(It.IsAny<WatchDog>())
+				broker.RunAndListen(
+					It.Is<WatchDog>(x=>x.CompletedEventHandler == watchDogEventHandlerMock.Object))
 				, Times.Once());
 
 			this.watchDogBrokerMock.VerifyNoOtherCalls();
