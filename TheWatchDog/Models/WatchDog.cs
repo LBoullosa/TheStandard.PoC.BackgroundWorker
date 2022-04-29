@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------
 
 using System;
+using System.Threading.Tasks;
 
 namespace TheWatchDog.Models
 {
@@ -17,5 +18,7 @@ namespace TheWatchDog.Models
 		public Action ActionOnSuccessfulRun { get; set; }
 		public Action ActionOnException { get; set; }
 		public Action ActionOnCancel { get; set; }
+
+		public Func<WatchDog, Task> CompletedEventHandler;
 	}
 }

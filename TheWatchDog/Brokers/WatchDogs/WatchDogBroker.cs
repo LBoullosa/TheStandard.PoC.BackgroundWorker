@@ -4,7 +4,6 @@
 // See License.txt in the project root for license information.
 // ---------------------------------------------------------------
 
-using System;
 using System.ComponentModel;
 using TheWatchDog.Models;
 
@@ -13,6 +12,7 @@ namespace TheWatchDog.Brokers.WatchDogs
 	public class WatchDogBroker : IWatchDogBroker
 	{
 		private readonly BackgroundWorker backgroundWorker;
+
 		WatchDog watchDog;
 
 		public WatchDogBroker() =>
@@ -41,7 +41,7 @@ namespace TheWatchDog.Brokers.WatchDogs
 		private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
 			watchDog.State = WatchDogState.Running;
-			
+
 			watchDog.ActionOnRun?.Invoke();
 			watchDog.State = WatchDogState.Runned;
 		}
@@ -71,6 +71,9 @@ namespace TheWatchDog.Brokers.WatchDogs
 				watchDog.ActionOnSuccessfulRun?.Invoke();
 				watchDog.State = WatchDogState.Finalized;
 			}
+
+			watchDog.CompletedEventHandler(watchDog);
+
 		}
 
 		public void Cancel()

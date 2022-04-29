@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------
 
 using System;
+using System.Threading.Tasks;
 using TheWatchDog.Brokers.WatchDogs;
 using TheWatchDog.Models;
 
@@ -16,11 +17,13 @@ namespace TheWatchDog.Services.Foundations.WatchDogs
 
 		public WatchDogService(IWatchDogBroker watchDogBroker) => this.watchDogBroker = watchDogBroker;
 
-		public void RunAndListen(Action actionOnRun = null
-						, Action actionDuringRun = null
-						, Action actionOnSuccessfulRun = null
-						, Action actionOnException = null
-						, Action actionOnCancel = null)
+		public void RunAndListen(
+				Func<WatchDog, Task> eventHandler
+				, Action actionOnRun = null
+				, Action actionDuringRun = null
+				, Action actionOnSuccessfulRun = null
+				, Action actionOnException = null
+				, Action actionOnCancel = null)
 		{
 			WatchDog watchDog = new WatchDog()
 				{
@@ -31,6 +34,7 @@ namespace TheWatchDog.Services.Foundations.WatchDogs
 				, ActionOnSuccessfulRun = actionOnSuccessfulRun
 				, ActionOnException = actionOnException
 				, ActionOnCancel = actionOnCancel
+				, CompletedEventHandler = eventHandler
 				};
 
 			watchDogBroker.RunAndListen(watchDog);

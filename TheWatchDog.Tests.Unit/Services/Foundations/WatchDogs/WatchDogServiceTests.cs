@@ -8,6 +8,10 @@ using Moq;
 using Tynamix.ObjectFiller;
 using TheWatchDog.Brokers.WatchDogs;
 using TheWatchDog.Services.Foundations.WatchDogs;
+using System;
+using System.Linq.Expressions;
+using TheWatchDog.Models;
+using System.Threading;
 
 namespace TheWatchDog.Tests.Unit.Services.Foundations.WatchDogs
 {
@@ -24,6 +28,24 @@ namespace TheWatchDog.Tests.Unit.Services.Foundations.WatchDogs
 
 		private static int GetRandomMiliseconds() =>
 			new IntRange(min: 1000, max: 3500).GetValue();
+
+		private Expression<Func<WatchDog, bool>> SameWatchDogAs(WatchDog expectedWatchDog)
+		{
+			return actualWatchDog => actualWatchDog.Id.Equals(expectedWatchDog.Id);
+		}
+
+		private static WatchDog CreateRandomWatchDog() =>
+			new WatchDog()
+			{
+				Id = Guid.NewGuid()
+				, ActionOnRun = CreateRandomAction()
+			};
+
+		private static Action CreateRandomAction() => () =>
+			{
+			//await Task.Delay(GetRandomMiliseconds());
+			Thread.Sleep(GetRandomMiliseconds());
+			};
 
 	}
 }

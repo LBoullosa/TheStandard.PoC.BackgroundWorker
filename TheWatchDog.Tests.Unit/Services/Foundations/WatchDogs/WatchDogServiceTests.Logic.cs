@@ -7,6 +7,7 @@
 using FluentAssertions;
 using Moq;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using TheWatchDog.Models;
 using Xunit;
@@ -16,42 +17,37 @@ namespace TheWatchDog.Tests.Unit.Services.Foundations.WatchDogs
 	public partial class WatchDogServiceTests
 	{
 		[Fact]
-		public void ShouldRunWorker()
+		public void ShouldListenToWorker()
 		{
 			// given
-			bool inputResult = false;
-			bool actualResult = inputResult;
-			bool expectedResult = true;
+			var watchDogEventHandlerMock =
+				new Mock<Func<WatchDog, Task>>();
 
-			Action actionOnRun = async () =>
-				{
-				await Task.Delay(GetRandomMiliseconds());
-				actualResult = true;
-				};
-
-			WatchDog inputJob = new WatchDog()
-				{
-				ActionOnRun = actionOnRun
-				};
+			WatchDog randomWatchDog = CreateRandomWatchDog();
+			WatchDog inputWatchDog = randomWatchDog;
 
 			watchDogBrokerMock
 				.Setup(broker =>
 					broker.RunAndListen(
 						It.IsAny<WatchDog>()))
-				.Callback<WatchDog>(callback =>
+				.Callback<WatchDog>(watchDog =>
 					{
-					callback.ActionOnRun();
+					watchDog.CompletedEventHandler.Invoke(inputWatchDog);
 					});
 
 			// when
-			watchDogService.RunAndListen(actionOnRun: actionOnRun);
+			watchDogService.RunAndListen(
+				eventHandler: watchDogEventHandlerMock.Object
+				, actionOnRun: randomWatchDog.ActionOnRun);
 
 			// then
+			watchDogEventHandlerMock.Verify(handler =>
+				handler.Invoke(It.Is(SameWatchDogAs(inputWatchDog)))
+				, Times.Once);
+
 			this.watchDogBrokerMock.Verify(broker =>
 				broker.RunAndListen(It.IsAny<WatchDog>())
 				, Times.Once());
-
-			//expectedResult.Should().Be(actualResult);
 
 			this.watchDogBrokerMock.VerifyNoOtherCalls();
 		}
