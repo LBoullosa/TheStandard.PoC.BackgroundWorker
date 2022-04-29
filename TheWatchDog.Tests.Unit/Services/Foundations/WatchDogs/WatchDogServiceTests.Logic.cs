@@ -36,5 +36,11 @@ namespace TheWatchDog.Tests.Unit.Services.Foundations.WatchDogs
 
 			this.watchDogBrokerMock.VerifyNoOtherCalls();
 		}
+
+		[Fact]
+		public void ShouldRunAndListenToWorker()
+		{
+
+		}
 	}
 }
