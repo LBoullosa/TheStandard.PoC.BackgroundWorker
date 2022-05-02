@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 // ---------------------------------------------------------------
 
+using System;
 using System.ComponentModel;
 using TheWatchDog.Models;
 
@@ -12,11 +13,17 @@ namespace TheWatchDog.Brokers.WatchDogs
 	public class WatchDogBroker : IWatchDogBroker
 	{
 		private readonly BackgroundWorker backgroundWorker;
+		
+		private Action<WatchDog> actionOnRunHandler;
+		private Action<WatchDog> actionOnChangeHandler;
 
-		WatchDog watchDog;
+		private WatchDog watchDog;
 
-		public WatchDogBroker() =>
+		public WatchDogBroker()
+		{
 			backgroundWorker = new BackgroundWorker();
+			InitializeBackgroundWorker();
+		}
 
 		private void InitializeBackgroundWorker()
 		{
@@ -27,53 +34,44 @@ namespace TheWatchDog.Brokers.WatchDogs
 			backgroundWorker.WorkerSupportsCancellation = true;
 		}
 
-		public void RunAndListen(WatchDog watchDog)
+		public void RunAndListen(Action<WatchDog> actionOnRunHandler
+								, Action<WatchDog> actionOnChangeHandler)
 		{
-			this.watchDog = watchDog;
+			this.actionOnRunHandler = actionOnRunHandler;
+			this.actionOnChangeHandler = actionOnChangeHandler;
 
-			InitializeBackgroundWorker();
-
-			watchDog.State = WatchDogState.Initialized;
+			this.watchDog = new WatchDog()
+				{
+				Id = Guid.NewGuid()
+				, State = WatchDogState.Initializating
+				, NotifyProgress = (int progressPorcentage, object userState) =>
+						backgroundWorker.ReportProgress(progressPorcentage, userState)
+				};
 
 			backgroundWorker.RunWorkerAsync();
 		}
 
 		private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
-			watchDog.State = WatchDogState.Running;
-
-			watchDog.ActionOnRun?.Invoke();
-			watchDog.State = WatchDogState.Runned;
+			actionOnRunHandler(watchDog);
 		}
 
 		private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
 		{
-			watchDog.ActionDuringRun?.Invoke();
+			watchDog.ProgressPercentage = e.ProgressPercentage;
+			watchDog.UserState = e.UserState;
+
+			actionOnChangeHandler(watchDog);
 		}
 
 		private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
-			if (e.Cancelled)
-			{
-				watchDog.State = WatchDogState.Canceling;
-				watchDog.ActionOnCancel?.Invoke();
-				watchDog.State = WatchDogState.Cancelled;
-			}
+			watchDog.IsCompleted = true;
+			watchDog.IsCancelled = e.Cancelled;
+			watchDog.Result = e.Result;
+			watchDog.Exception = e.Error;
 
-			if (e.Error is not null)
-			{
-				watchDog.State = WatchDogState.Error;
-				watchDog.ActionOnException?.Invoke();
-			}
-			else
-			{
-				watchDog.State = WatchDogState.Finalizing;
-				watchDog.ActionOnSuccessfulRun?.Invoke();
-				watchDog.State = WatchDogState.Finalized;
-			}
-
-			watchDog.CompletedEventHandler(watchDog);
-
+			actionOnChangeHandler(watchDog);
 		}
 
 		public void Cancel()

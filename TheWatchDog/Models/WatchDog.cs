@@ -5,20 +5,28 @@
 // ---------------------------------------------------------------
 
 using System;
-using System.Threading.Tasks;
 
 namespace TheWatchDog.Models
 {
 	public class WatchDog
 	{
 		public Guid Id { get; set; }
-		public WatchDogState State { get; set; }
-		public Action ActionOnRun { get; set; }
-		public Action ActionDuringRun { get; set; }
-		public Action ActionOnSuccessfulRun { get; set; }
-		public Action ActionOnException { get; set; }
-		public Action ActionOnCancel { get; set; }
 
-		public Func<WatchDog, Task> CompletedEventHandler;
+		public WatchDogState State { get; set; }
+
+		public bool IsCompleted { get; set; }
+		
+		public bool IsCancelled { get; set; }
+
+		public object Result { get; set; }
+
+		public Exception Exception { get; set; }
+
+		public int ProgressPercentage { get; set; }
+
+		public object UserState { get; set; }
+
+		public Action<int, object> NotifyProgress { get; set; }
+
 	}
 }

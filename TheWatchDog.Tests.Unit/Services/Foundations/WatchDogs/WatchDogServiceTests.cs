@@ -34,7 +34,7 @@ namespace TheWatchDog.Tests.Unit.Services.Foundations.WatchDogs
 			return actualWatchDog => actualWatchDog.Id.Equals(expectedWatchDog.Id);
 		}
 
-		private static WatchDog CreateRandomWatchDog() =>
+		/*private static WatchDog CreateRandomWatchDog() =>
 			new WatchDog()
 			{
 				Id = Guid.NewGuid()
@@ -44,7 +44,7 @@ namespace TheWatchDog.Tests.Unit.Services.Foundations.WatchDogs
 		private static Action CreateRandomAction() => () =>
 			{
 			Thread.Sleep(GetRandomMiliseconds());
-			};
+			};*/
 
 	}
 }

@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Foundations\WatchDogs\WatchDogServiceTests.Logic.Listen.cs" />
+    <Compile Remove="Services\Foundations\WatchDogs\WatchDogServiceTests.Logic.Publish.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="Moq" Version="4.17.2" />

@@ -16,7 +16,8 @@ namespace TheWatchDog.Models
 		, Paused
 		, Finalizing
 		, Finalized
-		, Error
+		, Erroring
+		, Errored
 		, Canceling
 		, Cancelled
 	}
