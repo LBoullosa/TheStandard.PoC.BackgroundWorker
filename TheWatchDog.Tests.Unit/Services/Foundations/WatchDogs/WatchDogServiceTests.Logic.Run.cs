@@ -18,9 +18,13 @@ namespace TheWatchDog.Tests.Unit.Services.Foundations.WatchDogs
 			var watchDogActionToBeExecutedMock =
 				new Mock<Action<WatchDog>>();
 
+			var watchDogActionOnChangedMock =
+				new Mock<Action<WatchDog>>();
+
 			// when
 			watchDogService.RunAndListen(
-				actionToBeExecuted: watchDogActionToBeExecutedMock.Object);
+				actionToBeExecuted: watchDogActionToBeExecutedMock.Object
+				, actionOnChange: watchDogActionOnChangedMock.Object);
 
 			// then
 			this.watchDogBrokerMock.Verify(broker =>
