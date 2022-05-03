@@ -4,7 +4,7 @@ PoC about integrating a BackgroundWorker as a Broker having in mind [The Standar
 DISCLAIMER. This is just a PoC, it´s a working progress to learn, think about the concepts and implementation details The Standard offers us.
 
 
-![Alt](Overview.drawio.svg)
+![Alt](TheWatchDog.Overview-Overview.drawio.svg)
 
 Actual features
 * Runs a worker with some Action.
@@ -27,4 +27,4 @@ The WatchDog model acts as the local contract in order to abstract the external 
 
 These are the possible status a WatchDog could have.
 
-![Alt](Overview-WatchDog Status Life Cycle.drawio)
+![Alt](TheWatchDog.Overview-WatchDog Status Life Cycle.drawio.svg)
