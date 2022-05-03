@@ -8,11 +8,12 @@ using System;
 using TheWatchDog.Models;
 
 namespace TheWatchDog.Brokers.WatchDogs
-{
-	public interface IWatchDogBroker
 	{
+	public interface IWatchDogBroker
+		{
 		void RunAndListen(Action<WatchDog> actionOnRunHandler
-							, Action<WatchDog> actionOnChangeHandler);
+							, Action<WatchDog, int, object> actionOnProgressHandler
+							, Action<WatchDog, bool, object, Exception> actionOnCompleteHandler);
 		void Cancel();
+		}
 	}
-}

@@ -4,37 +4,26 @@
 // See License.txt in the project root for license information.
 // ---------------------------------------------------------------
 
-using FluentAssertions;
+
 using Moq;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using TheWatchDog.Models;
 using Xunit;
 
 namespace TheWatchDog.Tests.Unit.Services.Foundations.WatchDogs
-{
-	public partial class WatchDogServiceTests
 	{
-
-		[Fact]
-		public void ShouldListenToWatchDogEvent()
+	public partial class WatchDogServiceTests
 		{
-			// given
-			var watchDogEventHandlerMock =
-				new Mock<Func<WatchDog, Task>>();
-
+		[Fact]
+		public void ShouldCancelWatchDog()
+			{
 			// when
-			watchDogService.RunAndListen(
-				eventHandler: watchDogEventHandlerMock.Object);
+			watchDogService.Cancel();
 
 			// then
 			this.watchDogBrokerMock.Verify(broker =>
-				broker.RunAndListen(
-					It.Is<WatchDog>(x => x.CompletedEventHandler == watchDogEventHandlerMock.Object))
+				broker.Cancel()
 				, Times.Once());
 
 			this.watchDogBrokerMock.VerifyNoOtherCalls();
+			}
 		}
 	}
-}

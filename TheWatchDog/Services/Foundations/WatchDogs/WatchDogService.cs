@@ -5,14 +5,14 @@
 // ---------------------------------------------------------------
 
 using System;
-using System.Threading.Tasks;
+using System.Threading;
 using TheWatchDog.Brokers.WatchDogs;
 using TheWatchDog.Models;
 
 namespace TheWatchDog.Services.Foundations.WatchDogs
-{
-	public class WatchDogService : IWatchDogService
 	{
+	public partial class WatchDogService : IWatchDogService
+		{
 		private readonly IWatchDogBroker watchDogBroker;
 
 		private Action<WatchDog> actionOnChange;
@@ -29,54 +29,109 @@ namespace TheWatchDog.Services.Foundations.WatchDogs
 				, Action<WatchDog> actionOnSuccessful = null
 				, Action<WatchDog> actionOnException = null
 				, Action<WatchDog> actionOnCancel = null)
-		{
+			{
 			this.actionToBeExecuted = actionToBeExecuted;
 			this.actionOnChange = actionOnChange;
 			this.actionOnSuccessful = actionOnSuccessful;
 			this.actionOnException = actionOnException;
 			this.actionOnCancel = actionOnCancel;
 
-			watchDogBroker.RunAndListen(OnRunHandler, OnChangeHandler);
-		}
+			watchDogBroker.RunAndListen(OnRunHandler, OnProgressHandler, OnCompleteHandler);
+			}
+
+		private void SetWatchDogStatus(WatchDog watchDog, WatchDogStatus newStatus)
+			{
+			watchDog.Status = newStatus;
+			OnChangeHandler(watchDog);
+			}
 
 		private void OnRunHandler(WatchDog watchDog)
-		{
-			watchDog.State = WatchDogState.Running;
-			actionToBeExecuted(watchDog);
-			watchDog.State = WatchDogState.Runned;
-		}
-
-		private void OnChangeHandler(WatchDog watchDog)
-		{
-			actionOnChange(watchDog);
-
-			if (watchDog.IsCompleted)
 			{
-				if (watchDog.Exception is not null)
+			watchDog.ThreadId = Thread.CurrentThread.ManagedThreadId;
+			SetWatchDogStatus(watchDog, WatchDogStatus.Initialized);
+
+			SetWatchDogStatus(watchDog, WatchDogStatus.Running);
+
+			String message = $"[{DateTime.Now.ToString("o")}] Thread {Thread.CurrentThread.ManagedThreadId} - Running Long Time Execution ...";
+			watchDog.NotifyProgress(0, message);
+
+			actionToBeExecuted(watchDog);
+
+			message = $"[{DateTime.Now.ToString("o")}] Thread {Thread.CurrentThread.ManagedThreadId} - End Long Time Execution.";
+			watchDog.NotifyProgress(100, message);
+			}
+
+		private void OnProgressHandler(WatchDog watchDog
+										, int progressPorcentage
+										, object userState)
+			{
+			lock (watchDog)
 				{
-					watchDog.State = WatchDogState.Erroring;
-					actionOnException?.Invoke(watchDog);
-					watchDog.State = WatchDogState.Errored;
-				}
-				else if (watchDog.IsCancelled)
-				{
-					watchDog.State = WatchDogState.Canceling;
-					actionOnCancel?.Invoke(watchDog);
-					watchDog.State = WatchDogState.Cancelled;
-				}
-				else
-				{
-					watchDog.State = WatchDogState.Finalizing;
-					actionOnSuccessful?.Invoke(watchDog);
-					watchDog.State = WatchDogState.Finalized;
+				watchDog.ProgressPercentage = progressPorcentage;
+				watchDog.UserState = userState;
+
+				OnChangeHandler(watchDog);
 				}
 			}
-		}
 
-		public void Cancel()
-		{
+		private void OnCompleteHandler(WatchDog watchDog
+										, bool isCancelled
+										, object result
+										, Exception exception)
+			{
+			SetWatchDogStatus(watchDog, WatchDogStatus.Runned);
+
+			watchDog.Exception = exception;
+			watchDog.Result = result;
+
+			if (exception is not null)
+				SetWatchDogStatus(watchDog, WatchDogStatus.Erroring);
+			else if (isCancelled)
+				SetWatchDogStatus(watchDog, WatchDogStatus.Canceling);
+			else
+				SetWatchDogStatus(watchDog, WatchDogStatus.Finalizing);
+			}
+
+		private void OnChangeHandler(WatchDog watchDog)
+			{
+			lock (watchDog)
+				{
+				actionOnChange(watchDog);
+
+				switch (watchDog.Status)
+					{
+					case WatchDogStatus.Initialized:
+						break;
+
+					case WatchDogStatus.Running:
+						break;
+
+					case WatchDogStatus.Runned:
+						break;
+
+					case WatchDogStatus.Canceling:
+						actionOnCancel?.Invoke(watchDog);
+						SetWatchDogStatus(watchDog, WatchDogStatus.Cancelled);
+						break;
+
+					case WatchDogStatus.Erroring:
+						actionOnException?.Invoke(watchDog);
+						SetWatchDogStatus(watchDog, WatchDogStatus.Errored);
+						break;
+
+					case WatchDogStatus.Finalizing:
+						actionOnSuccessful?.Invoke(watchDog);
+						SetWatchDogStatus(watchDog, WatchDogStatus.Finalized);
+						break;
+
+					default:
+						break;
+					}
+				}
+			}
+
+		public void Cancel() =>
 			watchDogBroker.Cancel();
-		}
 
+		}
 	}
-}

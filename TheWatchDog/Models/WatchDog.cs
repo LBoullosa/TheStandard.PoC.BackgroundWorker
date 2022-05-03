@@ -7,16 +7,14 @@
 using System;
 
 namespace TheWatchDog.Models
-{
-	public class WatchDog
 	{
+	public class WatchDog
+		{
 		public Guid Id { get; set; }
 
-		public WatchDogState State { get; set; }
+		public int ThreadId { get; set; }
 
-		public bool IsCompleted { get; set; }
-		
-		public bool IsCancelled { get; set; }
+		public WatchDogStatus Status { get; set; }
 
 		public object Result { get; set; }
 
@@ -26,7 +24,11 @@ namespace TheWatchDog.Models
 
 		public object UserState { get; set; }
 
+		public Func<bool> IsBusy { get; set; }
+
+		public Func<bool> IsRequestedForCancellation { get; set; }
+
 		public Action<int, object> NotifyProgress { get; set; }
 
+		}
 	}
-}

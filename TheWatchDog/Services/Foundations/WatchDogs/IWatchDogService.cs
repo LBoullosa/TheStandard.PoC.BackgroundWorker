@@ -8,9 +8,9 @@ using System;
 using TheWatchDog.Models;
 
 namespace TheWatchDog.Services.Foundations.WatchDogs
-{
-	public interface IWatchDogService
 	{
+	public interface IWatchDogService
+		{
 		void RunAndListen(Action<WatchDog> actionToBeExecuted
 						, Action<WatchDog> actionOnChange
 						, Action<WatchDog> actionOnSuccessful = null
@@ -18,5 +18,5 @@ namespace TheWatchDog.Services.Foundations.WatchDogs
 						, Action<WatchDog> actionOnCancel = null);
 
 		void Cancel();
+		}
 	}
-}

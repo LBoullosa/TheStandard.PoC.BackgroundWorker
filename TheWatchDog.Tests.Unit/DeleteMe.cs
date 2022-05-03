@@ -7,10 +7,10 @@
 using Xunit;
 
 namespace TheWatchDog.Tests.Unit
-{
-	public class DeleteMe
 	{
+	public class DeleteMe
+		{
 		[Fact]
 		public void ShouldBeTrue() => Assert.True(true);
+		}
 	}
-}

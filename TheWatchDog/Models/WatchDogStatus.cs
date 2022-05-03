@@ -5,9 +5,9 @@
 // ---------------------------------------------------------------
 
 namespace TheWatchDog.Models
-{
-	public enum WatchDogState
 	{
+	public enum WatchDogStatus
+		{
 		Initializating
 		, Initialized
 		, Running
@@ -20,5 +20,5 @@ namespace TheWatchDog.Models
 		, Errored
 		, Canceling
 		, Cancelled
+		}
 	}
-}
