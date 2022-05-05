@@ -10,7 +10,7 @@ namespace TheWatchDog.Models
 	{
 	public class WatchDog
 		{
-		public Guid Id { get; set; }
+		public Guid Id { get; init; }
 
 		public int ThreadId { get; set; }
 
@@ -24,11 +24,11 @@ namespace TheWatchDog.Models
 
 		public object UserState { get; set; }
 
-		public Func<bool> IsBusy { get; set; }
+		public Func<bool> IsBusy { get; init; }
 
-		public Func<bool> IsRequestedForCancellation { get; set; }
+		public Func<bool> IsRequestedForCancellation { get; init; }
 
-		public Action<int, object> NotifyProgress { get; set; }
+		public Action<int, object> NotifyProgress { get; init; }
 
 		}
 	}
