@@ -5,6 +5,9 @@ PoC about integrating a BackgroundWorker as a Broker having in mind [The Standar
 ###### DISCLAIMER. This is just a PoC, it´s a working progress to learn, think of the concepts and implementation details The Standard offers us.
 
 
+
+[WatchDogBroker](TheWatchDog/Brokers/WatchDogBroker.cs) is a [Support Broker Type](https://github.com/hassanhabib/The-Standard/blob/master/1.%20Brokers/1.%20Brokers.md#141-support-brokers).
+
 ![Alt](TheWatchDog.Overview-Overview.drawio.svg)
 
 Actual features
@@ -24,8 +27,8 @@ Pending to be added
 * Add more than one background worker from a Service.
 * ...
 
-The WatchDog model acts as the local contract in order to abstract the external dependency/resource (BackgroundWorker).
+The [WatchDog](TheWatchDog/Models/WatchDog.cs) model acts as the local contract in order to abstract the external dependency/resource (BackgroundWorker).
 
-These are the possible status a WatchDog could have.
+The possibles [status and status changes](TheWatchDog/Models/WatchDogStatus.cs) WatchDog has
 
 ![Alt](TheWatchDog.Overview-WatchDog%20Status%20Life%20Cycle.drawio.svg)
