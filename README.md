@@ -6,7 +6,7 @@ PoC about integrating a BackgroundWorker as a Broker having in mind [The Standar
 
 
 
-[WatchDogBroker](TheWatchDog/Brokers/WatchDogBroker.cs) is a [Support Broker Type](https://github.com/hassanhabib/The-Standard/blob/master/1.%20Brokers/1.%20Brokers.md#141-support-brokers).
+[WatchDogBroker](TheWatchDog/Brokers/WatchDogs/WatchDogBroker.cs) is a [Support Broker Type](https://github.com/hassanhabib/The-Standard/blob/master/1.%20Brokers/1.%20Brokers.md#141-support-brokers).
 
 ![Alt](TheWatchDog.Overview-Overview.drawio.svg)
 
